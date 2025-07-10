@@ -1,50 +1,121 @@
 # Projeto de Clusterização de Produtos da Amazon
 
-Este projeto tem como objetivo principal aplicar técnicas de **machine learning não supervisionado** para identificar grupos (clusters) de produtos semelhantes com base em suas características. A clusterização auxilia na **segmentação de produtos**, possibilitando uma análise mais estratégica em campanhas de marketing, organização de catálogos e personalização de recomendações.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Etapas do Projeto
+**Aplicação de Machine Learning Não Supervisionado para segmentação de produtos da Amazon em clusters, visando insights estratégicos para marketing e otimização de catálogos.**
 
-1. **Carregamento dos Dados**  
-   Os dados dos produtos da Amazon são carregados e preparados para análise.
+## Sumário
+- [Descrição do Projeto](#descrição-do-projeto)
+- [Demonstração](#demonstração)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Como Executar o Projeto](#como-executar-o-projeto)
+- [Geração de Arquivos Essenciais (Powershell)](#geração-de-arquivos-essenciais-powershell)
+- [Contribuições](#contribuições)
+- [Contato](#contato)
 
-2. **Pré-processamento**  
-   Inclui normalização das variáveis com `StandardScaler`, remoção de colunas irrelevantes e seleção de atributos numéricos adequados para os algoritmos de clusterização.
+## Descrição do Projeto
 
-3. **Determinação do número ideal de clusters (K)**  
-   Diversas abordagens são utilizadas para encontrar o melhor valor de `k`:
-   - **Método do Cotovelo (Elbow Method)**
-   - **Índice de Silhueta (Silhouette Score)**
-   - **Gap Statistic** (implementado manualmente)
-   - **Calinski-Harabasz Score**
-   - **Davies-Bouldin Score**
-   - **Visualizações com Yellowbrick**
+O core deste projeto reside na identificação do número ideal de clusters (`K`) e na aplicação do algoritmo K-Means para agrupar produtos da Amazon. A análise é complementada pela redução de dimensionalidade com PCA para visualização em 2D e a automatização da geração de relatórios executivos em PDF. O objetivo final é transformar dados brutos em informações acionáveis, fornecendo insights estratégicos para otimização de campanhas de marketing, organização de catálogos e personalização de recomendações.
 
-4. **Aplicação do KMeans**  
-   Com o valor ideal de `k` determinado, o algoritmo KMeans é utilizado para realizar a clusterização.
+## Demonstração
 
-5. **Redução de Dimensionalidade com PCA**  
-   Aplicado para visualizar os clusters em 2D de forma mais interpretável.
+Para uma visão detalhada da análise e dos resultados de clusterização, acesse o relatório completo em PDF:
 
-6. **Geração de Relatório em PDF**  
-   Um relatório automático em PDF é gerado utilizando a biblioteca `ReportLab`, contendo visualizações e estatísticas do modelo treinado.
+[Visualizar Relatório de Clusters (PDF)](/report/relatorio_clusters.pdf)
 
-## Tecnologias e Bibliotecas Utilizadas
+## Funcionalidades
 
-- **Pandas / NumPy** – Manipulação e análise de dados
-- **Matplotlib / Seaborn** – Visualizações gráficas
-- **Scikit-learn** – Pré-processamento, algoritmos de clusterização e métricas
-- **Yellowbrick** – Visualizações específicas para clustering (Elbow e Silhouette)
-- **PCA** – Redução de dimensionalidade
-- **ReportLab** – Geração automatizada de relatórios em PDF
-- **Python** – Linguagem principal do projeto
+* **Coleta e Pré-processamento de Dados:** Carregamento de dados brutos e aplicação de técnicas de limpeza e normalização (StandardScaler) para preparar as variáveis numéricas.
+* **Determinação do `K` Ideal:** Emprego de diversas métricas e visualizações robustas para identificar o número ótimo de clusters, incluindo:
+    * Método do Cotovelo (Elbow Method)
+    * Coeficiente de Silhueta (Silhouette Score)
+    * Gap Statistic (implementado para maior controle)
+    * Calinski-Harabasz Score
+    * Davies-Bouldin Score
+    * Visualizações interativas com Yellowbrick para validar a escolha.
+* **Clusterização com K-Means:** Aplicação do algoritmo K-Means utilizando o `K` ideal para a segmentação dos produtos.
+* **Redução de Dimensionalidade (PCA):** Utilização do PCA para projetar os dados em 2 dimensões, facilitando a visualização e interpretação dos clusters.
+* **Geração Automatizada de Relatórios:** Criação de um relatório executivo em formato PDF (utilizando ReportLab), consolidando as análises, métricas e visualizações dos clusters.
 
-## Resultados Esperados
+## Tecnologias Utilizadas
 
-- Segmentação clara dos produtos da Amazon em grupos distintos.
-- Geração de insights visuais e estatísticos para stakeholders.
-- Automatização do processo de relatório para fins de apresentação.
+As seguintes tecnologias e bibliotecas Python foram empregadas no desenvolvimento deste projeto:
 
----
+* **Python**: Linguagem de programação principal.
+* **Pandas**: Manipulação e análise eficiente de dados.
+* **NumPy**: Suporte para operações numéricas e arrays.
+* **Matplotlib**: Geração de gráficos e visualizações estáticas.
+* **Seaborn**: Criação de gráficos estatísticos atraentes e informativos.
+* **Scikit-learn (sklearn)**: Ferramentas para pré-processamento, algoritmos de clusterização (KMeans) e cálculo de métricas de avaliação.
+* **Yellowbrick**: Biblioteca para visualizações de diagnóstico específicas para modelos de Machine Learning (ElbowVisualizer, SilhouetteVisualizer).
+* **ReportLab**: Geração programática de documentos PDF para relatórios executivos.
+* **Jupyter Notebook**: Ambiente interativo para desenvolvimento, execução e documentação da análise.
 
-> 🔍 Este projeto pode ser facilmente adaptado para segmentação de clientes, análise de comportamento de usuários ou categorização de conteúdos em outros contextos de negócio.
+## Estrutura do Projeto
+
+A estrutura do repositório `Projeto_Clusterizacao_777` está organizada da seguinte forma:
+
+Projeto_Clusterizacao_777/
+├── dados/
+│   └── (dados brutos aqui)
+├── img/
+│   └── (gráficos gerados aqui)
+├── notebooks/
+│   └── (notebooks Jupyter aqui)
+├── report/
+│   └── relatorio_clusters.pdf
+├── src/
+│   └── (arquivos .py com o código fonte)
+├── .gitignore
+├── LICENSE.md
+├── README.md
+└── requirements.txt
+
+# ⚙️ Como Executar o Projeto
+
+Para replicar e executar este projeto em seu ambiente, siga os passos abaixo:
+
+1.  **Clone o repositório:**
+
+    ```bash
+    git clone [https://github.com/SeuUsuario/Projeto_Clusterizacao_777.git](https://github.com/SeuUsuario/Projeto_Clusterizacao_777.git)
+    cd Projeto_Clusterizacao_777
+    ```
+
+2.  **Crie um ambiente virtual (opcional, mas recomendado):**
+
+    ```bash
+    python -m venv venv
+    # No Windows
+    .\venv\Scripts\activate
+    # No macOS/Linux
+    source venv/bin/activate
+    ```
+
+3.  **Instale as dependências:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Execute os notebooks:**
+    Os notebooks na pasta `notebooks/` contêm o fluxo completo da análise, desde o pré-processamento até a clusterização e geração do relatório. Recomenda-se executá-los sequencialmente para reproduzir os resultados.
+
+    ```bash
+    jupyter notebook
+    ```
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests para melhorias, novas funcionalidades ou correção de bugs.
+
+## ✉️ Contato
+
+Para dúvidas ou informações adicionais, entre em contato:
+
+* **Nome:** Flávio Henrique Barbosa
+* **LinkedIn:** [Flávio Henrique Barbosa | LinkedIn](https://www.linkedin.com/in/fl%C3%A1vio-henrique-barbosa-38465938)
+* **Email:** flaviohenriquehb777@outlook.com
 
