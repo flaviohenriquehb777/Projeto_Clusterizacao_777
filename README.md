@@ -55,25 +55,19 @@ As seguintes tecnologias e bibliotecas Python foram empregadas no desenvolviment
 
 ## Estrutura do Projeto
 
-A estrutura do repositório `Projeto_Clusterizacao_777` está organizada da seguinte forma:
+Este repositório está organizado da seguinte forma:
 
-Projeto_Clusterizacao_777/
-├── dados/
-│   └── (dados brutos aqui)
-├── img/
-│   └── (gráficos gerados aqui)
-├── notebooks/
-│   └── (notebooks Jupyter aqui)
-├── report/
-│   └── relatorio_clusters.pdf
-├── src/
-│   └── (arquivos .py com o código fonte)
-├── .gitignore
-├── LICENSE.md
-├── README.md
-└── requirements.txt
+* `dados/`: Contém os dados brutos utilizados no projeto.
+* `img/`: Diretório onde os gráficos e visualizações gerados são salvos.
+* `notebooks/`: Contém os notebooks Jupyter que documentam o processo de análise, desde o pré-processamento até a clusterização e geração do relatório.
+* `report/`: Onde o relatório final em PDF (`relatorio_clusters.pdf`) é salvo.
+* `src/`: Contém os arquivos `.py` com o código-fonte principal do projeto.
+* `.gitignore`: Arquivo para ignorar arquivos e pastas específicos do controle de versão do Git.
+* `LICENSE.md`: Arquivo contendo a licença do projeto (MIT).
+* `README.md`: Este arquivo, com a documentação do projeto.
+* `requirements.txt`: Lista de todas as dependências Python necessárias para o projeto.
 
-# ⚙️ Como Executar o Projeto
+## ⚙️ Como Executar o Projeto
 
 Para replicar e executar este projeto em seu ambiente, siga os passos abaixo:
 
@@ -110,6 +104,10 @@ Para replicar e executar este projeto em seu ambiente, siga os passos abaixo:
 ## 🤝 Contribuições
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests para melhorias, novas funcionalidades ou correção de bugs.
+
+## Licença:
+
+Este projeto está licenciado sob a Licença MIT. Para mais detalhes, consulte o arquivo [LICENSE.md](LICENSE.md) na raiz do repositório.
 
 ## ✉️ Contato
 
