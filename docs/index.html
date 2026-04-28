@@ -87,21 +87,31 @@
       border-radius: 16px;
       padding: 14px;
       box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
     }
+    .card > div[id^="chart"], .card > div[style*="height"] { flex: 1; min-height: 0; }
     .kpi-title { color: var(--muted); font-size: 12px; }
     .kpi-value { font-size: 22px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; }
     .fade { animation: fade .25s ease; }
     @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     .section { display: none; }
     .section.active { display: block; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .row3 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; }
+    .row3 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; align-items: stretch; }
+    .row > .card, .row3 > .card { min-height: 420px; }
     .title { font-size: 18px; font-weight: 800; margin: 6px 0 10px; }
     .muted { color: var(--muted); }
+    .datatable-wrap { flex: 1; overflow: auto; }
     .datatable-wrap table { width: 100%; }
-    table.dataTable { background: rgba(17,24,39,.75); color: var(--text); border-radius: 14px; overflow: hidden; }
-    table.dataTable thead th { background: rgba(99,102,241,.12); color: var(--text); border-bottom: 1px solid rgba(148,163,184,.12); }
-    table.dataTable tbody td { border-bottom: 1px solid rgba(148,163,184,.08); }
+    table.dataTable { background: rgba(17,24,39,.75); color: var(--text); border-radius: 14px; overflow: hidden; border-collapse: separate; border-spacing: 0; }
+    table.dataTable thead th { background: rgba(99,102,241,.10); color: var(--text); border-bottom: 1px solid rgba(148,163,184,.10); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; padding: 12px 14px; }
+    table.dataTable tbody td { border-bottom: 1px solid rgba(148,163,184,.06); font-weight: 400; font-size: 13px; padding: 10px 14px; transition: background .15s ease; letter-spacing: 0.01em; }
+    table.dataTable tbody tr:hover td { background: rgba(99,102,241,.06); }
+    table.dataTable tbody tr:last-child td { border-bottom: none; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { color: var(--muted) !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: rgba(99,102,241,.18) !important; border-color: rgba(99,102,241,.3) !important; color: #e5e7eb !important; }
+    .dataTables_wrapper .dataTables_info { color: var(--muted); font-size: 12px; }
     .pill {
       display: inline-block;
       padding: 4px 8px;
@@ -117,8 +127,9 @@
       color: var(--text);
       padding: 10px 12px;
       cursor: pointer;
+      transition: all .15s ease;
     }
-    .btn:hover { background: rgba(99,102,241,.22); }
+    .btn:hover { background: rgba(99,102,241,.28); transform: translateY(-1px); }
     .accordion details {
       border: 1px solid rgba(148,163,184,.12);
       background: rgba(17,24,39,.65);
@@ -128,6 +139,8 @@
     .accordion summary { cursor: pointer; font-weight: 700; }
     .wordcloud { display: flex; flex-wrap: wrap; gap: 8px; }
     .word { padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(148,163,184,.12); background: rgba(99,102,241,.08); }
+    .img-placeholder { width:44px;height:44px;border-radius:10px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:18px; }
+    .img-placeholder { width:44px;height:44px;border-radius:10px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:18px; }
     @media (max-width: 1100px) {
       .app { grid-template-columns: 1fr; }
       .sidebar { height: auto; position: relative; }
@@ -353,6 +366,27 @@
 
     function unique(arr) { return Array.from(new Set(arr)); }
 
+    /* ── Global product name truncation ── */
+    function truncateName(name, maxLen) {
+      maxLen = maxLen || 45;
+      if (!name) return '';
+      return name.length > maxLen ? name.substring(0, maxLen) + '…' : name;
+    }
+    function truncName(name, max) { return truncateName(name, max); }
+
+    /* ── Heatmap color for table cells ── */
+    function heatBg(val, lo, hi) {
+      if (val === null || val === undefined || isNaN(val)) return '';
+      var t = Math.max(0, Math.min(1, (val - lo) / (hi - lo || 1)));
+      var r = Math.round(239 - t * 195);
+      var g = Math.round(68 + t * 129);
+      var b = Math.round(68 - t * 34);
+      return 'rgba(' + r + ',' + g + ',' + b + ',0.13)';
+    }
+
+    /* ── Image fallback placeholder (SVG data URI) ── */
+    var IMG_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2244%22 height=%2244%22 viewBox=%220 0 44 44%22%3E%3Crect width=%2244%22 height=%2244%22 rx=%2210%22 fill=%22%23111827%22/%3E%3Ctext x=%2222%22 y=%2226%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2218%22%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E";
+
     function getFilterCategory() {
       const v = document.getElementById('categoryFilter').value;
       return v === '__ALL__' ? null : v;
@@ -473,7 +507,7 @@
         type:'scatter', mode:'markers',
         x: fp.map(p=>p.discounted_price_clean),
         y: fp.map(p=>p.discount_pct_clean),
-        text: fp.map(p=>p.product_name),
+        text: fp.map(p=>truncName(p.product_name)),
         marker:{ size: 9, color: colors, colorscale: 'Viridis' }
       }], {
         paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'},
@@ -530,7 +564,7 @@
         type:'scatter', mode:'markers',
         x: fp.map(p=>p.rating_count_clean),
         y: fp.map(p=>p.rating_clean),
-        text: fp.map(p=>p.product_name),
+        text: fp.map(p=>truncName(p.product_name)),
         marker: { size: fp.map(p => Math.max(6, Math.min(30, (p.discounted_price_clean || 0)/500))), color: 'rgba(99,102,241,.85)' }
       }], {
         paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'},
@@ -552,7 +586,7 @@
         type:'scatter', mode:'markers',
         x: fp.map(p=>p.rating_count_clean),
         y: fp.map(p=>p.rating_clean),
-        text: fp.map(p=>p.product_name),
+        text: fp.map(p=>truncName(p.product_name)),
         marker: { size: 8, color: 'rgba(34,197,94,.75)' }
       }], {
         shapes: [
@@ -570,7 +604,7 @@
         .slice(0,10);
 
       const cols = [
-        { title: 'Name', data: 'product_name' },
+        { title: 'Name', data: 'product_name', render: (d) => truncName(d) },
         { title: 'Category', data: 'main_category' },
         { title: 'Rating', data: 'rating_clean', render: (d) => d===null? 'n/a' : fmt(d,2) },
         { title: 'Reviews', data: 'rating_count_clean', render: (d) => d===null? 'n/a' : fmt(d,0) },
@@ -582,7 +616,13 @@
       const thead = $('<thead><tr></tr></thead>');
       cols.forEach(c => thead.find('tr').append(`<th>${c.title}</th>`));
       tableEl.append(thead);
-      leadersTable = tableEl.DataTable({ data: leaders, columns: cols, pageLength: 5, destroy: true, searching: false, lengthChange: false, info: false });
+      leadersTable = tableEl.DataTable({ data: leaders, columns: cols, pageLength: 5, destroy: true, searching: false, lengthChange: false, info: false,
+        createdRow: function(row, data) {
+          var rVal = data.rating_clean; var dVal = data.discount_pct_clean;
+          if (rVal !== null) $(row).find('td:eq(2)').css('background', heatBg(rVal, 3.0, 5.0));
+          if (dVal !== null) $(row).find('td:eq(5)').css('background', heatBg(dVal, 0, 94));
+        }
+      });
     }
 
     let psiTable = null;
@@ -591,19 +631,22 @@
       const top = fp.slice(0, 20).reverse();
       Plotly.newPlot('chartPsiLeaderboard', [{
         type:'bar', orientation:'h',
-        y: top.map(p=>p.product_name),
+        y: top.map(p=>truncName(p.product_name, 40)),
         x: top.map(p=>p.PSI),
-        marker:{color:'rgba(99,102,241,.85)'}
+        text: top.map(p=>fmt(p.PSI,1)),
+        textposition: 'outside',
+        marker:{color:'rgba(99,102,241,.85)', line:{width:0}}
       }], {
-        paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'},
-        margin:{l:160,r:10,t:10,b:40}, xaxis:{title:'PSI'}
+        paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb', size:11},
+        margin:{l:220,r:50,t:10,b:40}, xaxis:{title:'PSI'},
+        yaxis:{automargin:true}
       }, {displayModeBar:false});
 
       Plotly.newPlot('chartPsiVsPrice', [{
         type:'scatter', mode:'markers',
         x: fp.map(p=>p.discounted_price_clean),
         y: fp.map(p=>p.PSI),
-        text: fp.map(p=>p.product_name),
+        text: fp.map(p=>truncName(p.product_name)),
         marker:{ size: 9, color: fp.map(p=>p.cluster), colorscale:'Turbo' }
       }], {
         paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'},
@@ -629,7 +672,7 @@
       }, {displayModeBar:false});
 
       const cols = [
-        { title: 'Name', data: 'product_name' },
+        { title: 'Name', data: 'product_name', render: (d) => truncName(d) },
         { title: 'Category', data: 'main_category' },
         { title: 'PSI', data: 'PSI', render: (d) => d===null? 'n/a' : fmt(d,2) },
         { title: 'Rating', data: 'rating_clean', render: (d) => d===null? 'n/a' : fmt(d,2) },
@@ -642,7 +685,13 @@
       const thead = $('<thead><tr></tr></thead>');
       cols.forEach(c => thead.find('tr').append(`<th>${c.title}</th>`));
       tableEl.append(thead);
-      psiTable = tableEl.DataTable({ data: fp, columns: cols, pageLength: 10, destroy: true });
+      psiTable = tableEl.DataTable({ data: fp, columns: cols, pageLength: 10, destroy: true,
+        createdRow: function(row, data) {
+          var psi = data.PSI; var rat = data.rating_clean;
+          if (psi !== null) $(row).find('td:eq(2)').css('background', heatBg(psi, 50, 88));
+          if (rat !== null) $(row).find('td:eq(3)').css('background', heatBg(rat, 3.0, 5.0));
+        }
+      });
     }
 
     function exportPsiCsv() {
@@ -670,7 +719,7 @@
       Plotly.newPlot('chartPca', [{
         type:'scatter', mode:'markers',
         x: fp.map(p=>p.pca_1), y: fp.map(p=>p.pca_2),
-        text: fp.map(p=>p.product_name),
+        text: fp.map(p=>truncName(p.product_name)),
         marker:{ size: 9, color: fp.map(p=>p.cluster), colorscale:'Turbo' }
       }], {
         paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'},
@@ -702,29 +751,54 @@
       }).join('');
       document.getElementById('clusterCards').innerHTML = cards;
 
-      const treemapRows = fp.map(p => ({
-        cluster_name: p.cluster_name || `Cluster ${p.cluster}`,
-        main_category: p.main_category || 'Unknown',
-        value: 1
-      }));
+      /* ── Treemap: aggregate counts per cluster+category pair ── */
+      const tmAgg = {};
+      fp.forEach(p => {
+        const cl = p.cluster_name || ('Cluster ' + p.cluster);
+        const cat = p.main_category || 'Unknown';
+        const key = cl + '||' + cat;
+        tmAgg[key] = (tmAgg[key] || { cluster: cl, category: cat, count: 0 });
+        tmAgg[key].count++;
+      });
+      const tmData = Object.values(tmAgg);
+      const tmClusters = unique(tmData.map(r => r.cluster));
+      const tmLabels = ['Amazon Products'];
+      const tmParents = [''];
+      const tmValues = [0];
+      const clusterTotals = {};
+      tmData.forEach(r => { clusterTotals[r.cluster] = (clusterTotals[r.cluster] || 0) + r.count; });
+      tmClusters.forEach(cl => { tmLabels.push(cl); tmParents.push('Amazon Products'); tmValues.push(clusterTotals[cl] || 0); });
+      tmData.forEach(r => { tmLabels.push(r.category + ' (' + r.cluster + ')'); tmParents.push(r.cluster); tmValues.push(r.count); });
+      tmValues[0] = Object.values(clusterTotals).reduce((a,b)=>a+b,0);
       Plotly.newPlot('chartTreemap', [{
         type: 'treemap',
-        labels: treemapRows.map(r => r.main_category),
-        parents: treemapRows.map(r => r.cluster_name),
-        values: treemapRows.map(r => r.value),
-        branchvalues: 'total'
+        labels: tmLabels,
+        parents: tmParents,
+        values: tmValues,
+        branchvalues: 'total',
+        textinfo: 'label+value',
+        marker: { colorscale: 'Turbo', line: { width: 1, color: 'rgba(10,14,26,.8)' } }
       }], {
         paper_bgcolor:'rgba(0,0,0,0)', font:{color:'#e5e7eb'}, margin:{l:10,r:10,t:10,b:10}
       }, {displayModeBar:false});
 
-      const opp = Object.entries(byCluster).map(([id,c]) => ({
-        id: id,
-        name: c.name,
-        score: (c.rating/c.n) * (c.discount/c.n)
-      })).sort((a,b)=>b.score-a.score);
-      document.getElementById('clusterOpportunity').textContent = opp.length
-        ? `Highest opportunity score (avg rating × avg discount): ${opp[0].name}`
-        : 'n/a';
+      /* ── Actionable opportunity notes ── */
+      const oppEntries = Object.entries(byCluster).map(([id,c]) => {
+        const avgR = c.rating/c.n, avgD = c.discount/c.n, avgP = c.price/c.n, avgPsi = c.psi/c.n;
+        return { id, name: c.name, n: c.n, avgR, avgD, avgP, avgPsi, score: avgR * avgD };
+      }).sort((a,b) => b.score - a.score);
+      const oppNotes = oppEntries.map(o => {
+        let insight = '';
+        const idNum = Number(o.id);
+        if (idNum === 2) insight = '📦 <b>' + o.name + '</b> (' + o.n + ' produtos): Alto volume com desconto relativamente baixo (' + fmt(o.avgD,0) + '%). Oportunidade: campanhas de queima de estoque e otimização de pricing para ganhar market share sem destruir margem; focar em conversão (títulos, bullets, imagens) e provas sociais (reviews).';
+        else if (idNum === 4) insight = '💸 <b>' + o.name + '</b> (' + o.n + ' produtos): Produtos budget com desconto elevado (' + fmt(o.avgD,0) + '%). Margens tendem a ficar comprimidas; avaliar bundles/kits e cross-sell para aumentar ticket médio e reduzir dependência de desconto.';
+        else if (o.avgD > 70 && o.avgR >= 4.0) insight = '⚡ <b>' + o.name + '</b> (' + o.n + ' produtos): Alta avaliação (' + fmt(o.avgR,1) + '★) com desconto agressivo (' + fmt(o.avgD,0) + '%). Estratégia: dominar market share — esses produtos já têm validação do consumidor e preço competitivo para conquistar Best Seller badges.';
+        else if (o.avgD > 70 && o.avgR < 4.0) insight = '🔥 <b>' + o.name + '</b> (' + o.n + ' produtos): Desconto alto (' + fmt(o.avgD,0) + '%) mas rating moderado (' + fmt(o.avgR,1) + '★). Oportunidade de queima de estoque — considerar bundles ou kits para aumentar ticket médio e reduzir exposição.';
+        else if (o.avgD <= 70 && o.avgR >= 4.2) insight = '💎 <b>' + o.name + '</b> (' + o.n + ' produtos): Rating premium (' + fmt(o.avgR,1) + '★) com desconto conservador (' + fmt(o.avgD,0) + '%). Margem saudável — expandir a categoria com upselling e cross-selling de acessórios.';
+        else insight = '📊 <b>' + o.name + '</b> (' + o.n + ' produtos): Perfil misto (Rating ' + fmt(o.avgR,1) + '★, Desconto ' + fmt(o.avgD,0) + '%, PSI médio ' + fmt(o.avgPsi,1) + '). Avaliar otimização de listings e investir em reviews para mover para quadrante premium.';
+        return '<div style="margin-bottom:10px;line-height:1.6">' + insight + '</div>';
+      }).join('');
+      document.getElementById('clusterOpportunity').innerHTML = oppNotes || 'n/a';
     }
 
     let reviewsTable = null;
@@ -825,8 +899,8 @@
     let catalogTable = null;
     function initCatalogTable() {
       const cols = [
-        { title: 'Image', data: 'img_link', render: (d) => d ? `<img src="${d}" style="width:44px;height:44px;object-fit:cover;border-radius:10px"/>` : '' },
-        { title: 'Name', data: 'product_name', render: (d, t, r) => r.product_link ? `<a href="${r.product_link}" target="_blank">${d}</a>` : d },
+        { title: 'Image', data: 'img_link', render: (d) => d ? `<img src="${d}" style="width:44px;height:44px;object-fit:cover;border-radius:10px" onerror="this.onerror=null;this.src='${IMG_PLACEHOLDER}'"/>` : '<div class="img-placeholder">📦</div>' },
+        { title: 'Name', data: 'product_name', render: (d, t, r) => { const n = truncName(d); return r.product_link ? `<a href="${r.product_link}" target="_blank">${n}</a>` : n; } },
         { title: 'Category', data: 'main_category' },
         { title: 'Price (₹)', data: 'discounted_price_clean', render: (d) => d===null? 'n/a' : fmt(d,0) },
         { title: 'Discount %', data: 'discount_pct_clean', render: (d) => d===null? 'n/a' : fmt(d,1) },
