@@ -6,8 +6,8 @@
 [![Plotly](https://img.shields.io/badge/Plotly-Interactive-3F4F75?logo=plotly&logoColor=white)](https://plotly.com/python/)
 [![HTML5](https://img.shields.io/badge/HTML5-Dashboard-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 
-<a href="dashboard/index.html">
-  <img src="reports/figures/dashboard_preview.png" alt="Dashboard Preview" width="100%"/>
+<a href="https://flaviohenriquehb777.github.io/Amazon_Product_Clustering/">
+  <img src="reports/figures/img_min.png" alt="Open dashboard (click to open)" width="100%"/>
 </a>
 
 ## Project Overview
