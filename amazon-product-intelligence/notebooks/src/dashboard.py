@@ -30,29 +30,19 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
   <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
   <style>
     :root {{
-      --bg: #06101d;
-      --bg-2: #0b1528;
-      --surface: rgba(15,23,42,.78);
-      --surface-strong: rgba(15,23,42,.92);
+      --bg: #0a0e1a;
       --card: #111827;
-      --card-border: rgba(148,163,184,.16);
       --muted: #94a3b8;
       --text: #e5e7eb;
-      --heading: #f8fafc;
-      --accent: #7c3aed;
-      --accent-2: #22d3ee;
+      --accent: #6366f1;
       --good: #22c55e;
       --warn: #f59e0b;
       --bad: #ef4444;
-      --shadow: 0 24px 60px rgba(2,6,23,.42);
-      --shadow-soft: 0 14px 34px rgba(15,23,42,.24);
-      --sidebar-width: 292px;
-      --page-pad: 20px;
-      --gap: 16px;
-      --radius: 18px;
-      --chart-sm: 430px;
-      --chart-md: 500px;
-      --chart-lg: 580px;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --sidebar-width: 280px;
+      --page-pad: 16px;
+      --gap: 14px;
+      --radius: 16px;
     }}
     * {{ box-sizing: border-box; }}
     html, body {{ height: 100%; overflow: hidden; }}
@@ -60,27 +50,13 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       margin: 0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(1200px 720px at 16% -8%, rgba(124,58,237,.24), transparent 58%),
-        radial-gradient(980px 640px at 110% 8%, rgba(34,211,238,.16), transparent 58%),
-        radial-gradient(860px 540px at 50% 118%, rgba(34,197,94,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg-2), var(--bg));
+        radial-gradient(1200px 700px at 30% -10%, rgba(99,102,241,.25), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.18), transparent 60%),
+        var(--bg);
       color: var(--text);
       overflow: hidden;
-      letter-spacing: -0.01em;
     }}
-    body::before {{
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), transparent 28%, transparent 72%, rgba(255,255,255,.02));
-      mix-blend-mode: screen;
-      opacity: .7;
-    }}
-    *::-webkit-scrollbar {{ width: 10px; height: 10px; }}
-    *::-webkit-scrollbar-thumb {{ background: rgba(148,163,184,.18); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }}
-    *::-webkit-scrollbar-track {{ background: transparent; }}
-    a {{ color: #c4b5fd; text-decoration: none; }}
+    a {{ color: #a5b4fc; text-decoration: none; }}
     .app {{
       display: grid;
       grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
@@ -91,30 +67,27 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       position: sticky;
       top: 0;
       height: 100vh;
-      padding: 24px 18px 20px;
+      padding: 22px 18px;
       overflow: auto;
       display: flex;
       flex-direction: column;
       gap: 18px;
-      background: linear-gradient(180deg, rgba(15,23,42,.90), rgba(6,16,29,.84));
-      border-right: 1px solid rgba(148,163,184,.10);
-      backdrop-filter: blur(18px) saturate(135%);
-      box-shadow: inset -1px 0 0 rgba(255,255,255,.03);
+      background: linear-gradient(180deg, rgba(17,24,39,.92), rgba(10,14,26,.92));
+      border-right: 1px solid rgba(148,163,184,.12);
     }}
-    .brand {{ font-weight: 800; letter-spacing: -0.03em; font-size: 19px; margin: 0; color: var(--heading); }}
-    .nav {{ display: flex; flex-direction: column; gap: 9px; }}
+    .brand {{ font-weight: 800; letter-spacing: -0.02em; font-size: 18px; margin: 0; }}
+    .nav {{ display: flex; flex-direction: column; gap: 8px; }}
     .nav button {{
       display: flex; align-items: center; gap: 10px;
-      background: rgba(255,255,255,.02); color: var(--text);
-      border: 1px solid rgba(148,163,184,.10);
-      padding: 11px 13px; border-radius: 14px;
+      background: transparent; color: var(--text);
+      border: 1px solid rgba(148,163,184,.12);
+      padding: 10px 12px; border-radius: 12px;
       cursor: pointer; text-align: left;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
-      box-shadow: 0 8px 24px rgba(2,6,23,.12);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
     }}
-    .nav button:hover {{ transform: translateY(-1px); border-color: rgba(124,58,237,.42); background: rgba(124,58,237,.09); box-shadow: 0 10px 28px rgba(76,29,149,.18); }}
-    .nav button.active {{ border-color: rgba(124,58,237,.72); background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(34,211,238,.10)); box-shadow: inset 0 0 0 1px rgba(124,58,237,.18), 0 12px 26px rgba(76,29,149,.20); }}
-    .icon {{ width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9px; background: linear-gradient(135deg, rgba(124,58,237,.28), rgba(34,211,238,.14)); flex: 0 0 auto; }}
+    .nav button:hover {{ transform: translateY(-1px); border-color: rgba(99,102,241,.45); background: rgba(99,102,241,.08); }}
+    .nav button.active {{ border-color: rgba(99,102,241,.85); background: rgba(99,102,241,.12); box-shadow: inset 0 0 0 1px rgba(99,102,241,.25); }}
+    .icon {{ width: 22px; height: 22px; display: grid; place-items: center; border-radius: 8px; background: rgba(99,102,241,.18); flex: 0 0 auto; }}
     .main {{
       min-width: 0;
       min-height: 0;
@@ -123,29 +96,16 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       flex-direction: column;
       gap: var(--gap);
       height: 100vh;
-      overflow: auto;
-      position: relative;
+      overflow: hidden;
     }}
-    .topbar {{
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 0 0 auto;
-      position: sticky;
-      top: 0;
-      z-index: 8;
-      padding-bottom: 4px;
-      background: linear-gradient(180deg, rgba(6,16,29,.92), rgba(6,16,29,.72) 70%, rgba(6,16,29,0));
-      backdrop-filter: blur(10px);
-    }}
+    .topbar {{ display: flex; flex-direction: column; gap: 12px; flex: 0 0 auto; }}
     .ticker {{
       overflow: hidden;
-      border-radius: 16px;
+      border-radius: 14px;
       border: 1px solid rgba(148,163,184,.12);
-      background: linear-gradient(135deg, rgba(15,23,42,.82), rgba(15,23,42,.64));
-      box-shadow: var(--shadow-soft);
-      min-height: 44px;
-      backdrop-filter: blur(14px);
+      background: rgba(17,24,39,.65);
+      box-shadow: var(--shadow);
+      min-height: 42px;
     }}
     .ticker-track {{ display: inline-block; white-space: nowrap; padding: 10px 0; animation: marquee 22s linear infinite; }}
     .ticker-item {{ display: inline-block; padding: 0 26px; color: var(--muted); }}
@@ -195,55 +155,27 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
     .filter-label {{ font-size: 12px; margin-bottom: 6px; color: var(--muted); }}
     select {{
       width: 100%;
-      border-radius: 14px;
-      padding: 11px 13px;
-      background: rgba(15,23,42,.78);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(17,24,39,.65);
       color: var(--text);
-      border: 1px solid rgba(148,163,184,.14);
+      border: 1px solid rgba(148,163,184,.12);
       outline: none;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
-    }}
-    select:focus {{
-      border-color: rgba(124,58,237,.60);
-      box-shadow: 0 0 0 4px rgba(124,58,237,.12);
-      background: rgba(15,23,42,.92);
     }}
     #filterSlotTop, #filterSlotOverview, #filterSlotSegments {{ display: flex; justify-content: flex-end; }}
     .grid {{ display: grid; gap: var(--gap); min-height: 0; }}
     .kpis {{ grid-template-columns: repeat(6, minmax(0, 1fr)); }}
     .card {{
-      background: linear-gradient(180deg, rgba(15,23,42,.84), rgba(15,23,42,.72));
-      border: 1px solid rgba(148,163,184,.13);
+      background: rgba(17,24,39,.75);
+      border: 1px solid rgba(148,163,184,.12);
       border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow-soft);
+      padding: 12px;
+      box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       min-height: 0;
       overflow: hidden;
-      position: relative;
-      isolation: isolate;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }}
-    .card::before {{
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,0) 35%, rgba(124,58,237,.16));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      opacity: .75;
-    }}
-    .card:hover {{
-      transform: translateY(-1px);
-      box-shadow: 0 18px 42px rgba(2,6,23,.30);
-      border-color: rgba(124,58,237,.22);
     }}
     .card > div[id^="chart"],
     .card > div[style*="height"],
@@ -255,47 +187,37 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       flex: 1 1 auto;
       min-height: 0;
     }}
-    .chart-slot {{
-      width: 100%;
-      border-radius: 14px;
-    }}
-    .chart-sm {{ height: var(--chart-sm); }}
-    .chart-md {{ height: var(--chart-md); }}
-    .chart-lg {{ height: var(--chart-lg); }}
     .js-plotly-plot, .plot-container, .svg-container {{
       width: 100% !important;
       height: 100% !important;
       min-height: 0 !important;
       overflow: hidden !important;
-      border-radius: 14px;
     }}
-    .kpi-title {{ color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }}
-    .kpi-value {{ font-size: 24px; font-weight: 800; margin-top: 6px; letter-spacing: -0.03em; color: var(--heading); }}
+    .kpi-title {{ color: var(--muted); font-size: 12px; }}
+    .kpi-value {{ font-size: 22px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; }}
     .fade {{ animation: fade .25s ease; }}
     @keyframes fade {{ from {{ opacity: 0; transform: translateY(4px); }} to {{ opacity: 1; transform: translateY(0); }} }}
     .section {{
       display: none;
       flex: 1 1 auto;
       min-height: 0;
-      overflow: visible;
-      padding-bottom: 6px;
+      overflow: hidden;
     }}
-    .section.active {{ display: grid; gap: var(--gap); align-content: start; }}
-    #overview.active,
-    #pricing.active,
-    #ratings.active,
-    #psi.active,
-    #segments.active,
-    #sentiment.active,
-    #report.active,
-    #catalog.active {{ grid-template-rows: none; }}
+    .section.active {{ display: grid; gap: var(--gap); }}
+    #overview.active {{ grid-template-rows: auto minmax(0, 1fr) auto; }}
+    #pricing.active {{ grid-template-rows: minmax(0, 1.02fr) minmax(0, .98fr) auto; }}
+    #ratings.active {{ grid-template-rows: minmax(0, 1fr) minmax(0, .92fr); }}
+    #psi.active {{ grid-template-rows: minmax(0, 1.08fr) minmax(0, .92fr); }}
+    #segments.active {{ grid-template-rows: minmax(0, 1fr) auto minmax(0, .9fr); }}
+    #sentiment.active {{ grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(140px, .56fr); }}
+    #report.active, #catalog.active {{ grid-template-rows: minmax(0, 1fr); }}
     .row, .row3, .rowSegments {{ display: grid; gap: var(--gap); align-items: stretch; min-height: 0; }}
     .row {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     .row3, .rowSegments {{ grid-template-columns: minmax(0, 1.18fr) minmax(320px, .82fr); }}
     .row > .card, .row3 > .card, .rowSegments > .card, .kpis > .card {{ min-height: 0; height: 100%; }}
-    #overview .kpis .card {{ min-height: 102px; justify-content: center; }}
-    .title {{ font-size: 15px; font-weight: 800; margin: 0; line-height: 1.2; color: var(--heading); letter-spacing: -0.02em; }}
-    .muted {{ color: var(--muted); font-size: 12px; line-height: 1.5; }}
+    #overview .kpis .card {{ min-height: 88px; justify-content: center; }}
+    .title {{ font-size: 16px; font-weight: 800; margin: 0; line-height: 1.2; }}
+    .muted {{ color: var(--muted); font-size: 12px; line-height: 1.45; }}
     .datatable-wrap, #clusterCards, #clusterOpportunity, #qaAccordion, #wordCloud {{ overflow: auto; padding-right: 4px; }}
     #clusterOpportunity {{ white-space: normal; line-height: 1.6; }}
     .datatable-wrap table {{ width: 100%; }}
@@ -423,11 +345,11 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Products by Category</div>
-            <div id="chartCategoryBar" class="chart-slot chart-sm"></div>
+            <div id="chartCategoryBar" style="height:380px"></div>
           </div>
           <div class="card">
             <div class="title">Data Quality Gauge</div>
-            <div id="chartQualityGauge" class="chart-slot chart-sm"></div>
+            <div id="chartQualityGauge" style="height:380px"></div>
           </div>
         </div>
         <div id="filterSlotOverview" style="margin-top:14px;display:flex;justify-content:flex-end;"></div>
@@ -437,21 +359,21 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Price by Category (Box)</div>
-            <div id="chartPriceBox" class="chart-slot chart-md"></div>
+            <div id="chartPriceBox" style="height:420px"></div>
           </div>
           <div class="card">
             <div class="title">Price vs Discount</div>
-            <div id="chartPriceDiscount" class="chart-slot chart-md"></div>
+            <div id="chartPriceDiscount" style="height:420px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Discount Distribution</div>
-            <div id="chartDiscountHist" class="chart-slot chart-sm"></div>
+            <div id="chartDiscountHist" style="height:380px"></div>
           </div>
           <div class="card">
             <div class="title">Discount × Category (Heatmap)</div>
-            <div id="chartDiscountHeatmap" class="chart-slot chart-sm"></div>
+            <div id="chartDiscountHeatmap" style="height:380px"></div>
           </div>
         </div>
         <div class="card" style="margin-top:14px">
@@ -465,23 +387,23 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Rating vs Review Volume</div>
-            <div id="chartRatingReviews" class="chart-slot chart-md"></div>
+            <div id="chartRatingReviews" style="height:420px"></div>
           </div>
           <div class="card">
             <div class="title">Opportunity Quadrants</div>
             <div class="muted">High rating × high reviews are leaders; high rating × low reviews are hidden gems.</div>
-            <div id="chartQuadrants" class="chart-slot chart-md" style="margin-top:10px"></div>
+            <div id="chartQuadrants" style="height:390px;margin-top:10px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Ratings Distribution</div>
-            <div id="chartRatingDist" class="chart-slot chart-sm"></div>
+            <div id="chartRatingDist" style="height:360px"></div>
           </div>
           <div class="card">
             <div class="title">Top Leaders — Rating × Volume</div>
             <div class="muted">Clique em uma barra para filtrar por categoria.</div>
-            <div id="chartLeaders" class="chart-slot chart-sm" style="margin-top:10px"></div>
+            <div id="chartLeaders" style="height:360px;margin-top:10px"></div>
           </div>
         </div>
       </section>
@@ -490,17 +412,17 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Top 20 PSI Leaderboard</div>
-            <div id="chartPsiLeaderboard" class="chart-slot chart-lg"></div>
+            <div id="chartPsiLeaderboard" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">PSI vs Price (by Cluster)</div>
-            <div id="chartPsiVsPrice" class="chart-slot chart-lg"></div>
+            <div id="chartPsiVsPrice" style="height:520px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Average PSI by Category</div>
-            <div id="chartPsiByCategory" class="chart-slot chart-md"></div>
+            <div id="chartPsiByCategory" style="height:420px"></div>
           </div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -518,7 +440,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="rowSegments">
           <div class="card">
             <div class="title">Clusters (PCA 2D)</div>
-            <div id="chartPca" class="chart-slot chart-lg"></div>
+            <div id="chartPca" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">Cluster Profiles</div>
@@ -529,7 +451,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="rowSegments" style="margin-top:14px">
           <div class="card">
             <div class="title">Treemap — Cluster × Category</div>
-            <div id="chartTreemap" class="chart-slot chart-md"></div>
+            <div id="chartTreemap" style="height:460px"></div>
           </div>
           <div class="card">
             <div class="title">Opportunity Notes</div>
@@ -542,17 +464,17 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Overall Sentiment Gauge</div>
-            <div id="chartSentimentGauge" class="chart-slot chart-md"></div>
+            <div id="chartSentimentGauge" style="height:420px"></div>
           </div>
           <div class="card">
             <div class="title">Sentiment by Category</div>
-            <div id="chartSentimentByCategory" class="chart-slot chart-md"></div>
+            <div id="chartSentimentByCategory" style="height:420px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Sentiment vs Rating</div>
-            <div id="chartSentimentVsRating" class="chart-slot chart-md"></div>
+            <div id="chartSentimentVsRating" style="height:420px"></div>
           </div>
           <div class="card">
             <div class="title">Top Reviews</div>
