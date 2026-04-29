@@ -359,21 +359,21 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Price by Category (Box)</div>
-            <div id="chartPriceBox" style="height:420px"></div>
+            <div id="chartPriceBox" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">Price vs Discount</div>
-            <div id="chartPriceDiscount" style="height:420px"></div>
+            <div id="chartPriceDiscount" style="height:520px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Discount Distribution</div>
-            <div id="chartDiscountHist" style="height:380px"></div>
+            <div id="chartDiscountHist" style="height:480px"></div>
           </div>
           <div class="card">
             <div class="title">Discount × Category (Heatmap)</div>
-            <div id="chartDiscountHeatmap" style="height:380px"></div>
+            <div id="chartDiscountHeatmap" style="height:480px"></div>
           </div>
         </div>
         <div class="card" style="margin-top:14px">
@@ -387,23 +387,23 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Rating vs Review Volume</div>
-            <div id="chartRatingReviews" style="height:420px"></div>
+            <div id="chartRatingReviews" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">Opportunity Quadrants</div>
             <div class="muted">High rating × high reviews are leaders; high rating × low reviews are hidden gems.</div>
-            <div id="chartQuadrants" style="height:390px;margin-top:10px"></div>
+            <div id="chartQuadrants" style="height:500px;margin-top:10px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Ratings Distribution</div>
-            <div id="chartRatingDist" style="height:360px"></div>
+            <div id="chartRatingDist" style="height:460px"></div>
           </div>
           <div class="card">
             <div class="title">Top Leaders — Rating × Volume</div>
             <div class="muted">Clique em uma barra para filtrar por categoria.</div>
-            <div id="chartLeaders" style="height:360px;margin-top:10px"></div>
+            <div id="chartLeaders" style="height:460px;margin-top:10px"></div>
           </div>
         </div>
       </section>
@@ -412,17 +412,17 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Top 20 PSI Leaderboard</div>
-            <div id="chartPsiLeaderboard" style="height:520px"></div>
+            <div id="chartPsiLeaderboard" style="height:640px"></div>
           </div>
           <div class="card">
             <div class="title">PSI vs Price (by Cluster)</div>
-            <div id="chartPsiVsPrice" style="height:520px"></div>
+            <div id="chartPsiVsPrice" style="height:640px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Average PSI by Category</div>
-            <div id="chartPsiByCategory" style="height:420px"></div>
+            <div id="chartPsiByCategory" style="height:520px"></div>
           </div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -440,7 +440,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="rowSegments">
           <div class="card">
             <div class="title">Clusters (PCA 2D)</div>
-            <div id="chartPca" style="height:520px"></div>
+            <div id="chartPca" style="height:640px"></div>
           </div>
           <div class="card">
             <div class="title">Cluster Profiles</div>
@@ -451,7 +451,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="rowSegments" style="margin-top:14px">
           <div class="card">
             <div class="title">Treemap — Cluster × Category</div>
-            <div id="chartTreemap" style="height:460px"></div>
+            <div id="chartTreemap" style="height:580px"></div>
           </div>
           <div class="card">
             <div class="title">Opportunity Notes</div>
@@ -464,17 +464,17 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         <div class="row">
           <div class="card">
             <div class="title">Overall Sentiment Gauge</div>
-            <div id="chartSentimentGauge" style="height:420px"></div>
+            <div id="chartSentimentGauge" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">Sentiment by Category</div>
-            <div id="chartSentimentByCategory" style="height:420px"></div>
+            <div id="chartSentimentByCategory" style="height:520px"></div>
           </div>
         </div>
         <div class="row" style="margin-top:14px">
           <div class="card">
             <div class="title">Sentiment vs Rating</div>
-            <div id="chartSentimentVsRating" style="height:420px"></div>
+            <div id="chartSentimentVsRating" style="height:520px"></div>
           </div>
           <div class="card">
             <div class="title">Top Reviews</div>
@@ -1469,4 +1469,3 @@ def write_dashboard(dashboard_data: dict[str, Any], output_path: Path) -> Path:
     """Write dashboard HTML to disk."""
     output_path.write_text(render_dashboard_html(dashboard_data), encoding="utf-8")
     return output_path
-
