@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://flaviohenriquehb777.github.io/Amazon_Product_Clustering/">
-    <img src="amazon-product-intelligence/reports/figures/dashboard_preview.png" alt="Dashboard Preview (click to open)" width="100%"/>
+    <img src="amazon-product-intelligence/reports/figures/img_min.png" alt="Open dashboard (click to open)" width="100%"/>
   </a>
 </p>
 
