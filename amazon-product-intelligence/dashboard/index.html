@@ -179,7 +179,12 @@
     .card > #wordCloud {
       flex: 1 1 auto;
     }
-    .js-plotly-plot, .plot-container, .svg-container {
+    .js-plotly-plot {
+      width: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    .plot-container, .svg-container {
       width: 100% !important;
       height: 100% !important;
       min-height: 0 !important;
@@ -568,6 +573,21 @@
       requestAnimationFrame(() => requestAnimationFrame(fn));
     }
 
+    function captureChartHeights() {
+      document.querySelectorAll('div[id^="chart"]').forEach(el => {
+        const raw = el.getAttribute('style') || '';
+        const m = raw.match(/height\s*:\s*([0-9.]+)px/i);
+        if (m) el.dataset.h = m[1];
+      });
+    }
+
+    function enforceChartHeights(root) {
+      (root || document).querySelectorAll('div[id^="chart"]').forEach(el => {
+        const h = Number(el.dataset.h);
+        if (h > 0) el.style.height = `${h}px`;
+      });
+    }
+
     function resizeVisiblePlots() {
       const section = document.querySelector('.section.active');
       if (!section || typeof Plotly === 'undefined') return;
@@ -585,6 +605,8 @@
 
     function scheduleActiveLayoutRefresh() {
       afterLayout(() => {
+        const section = document.querySelector('.section.active');
+        if (section) enforceChartHeights(section);
         resizeVisiblePlots();
         adjustVisibleTables();
       });
@@ -1456,6 +1478,7 @@
     renderQA();
     initCatalogTable();
     activateTab('overview');
+    captureChartHeights();
     refreshAll();
   </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>

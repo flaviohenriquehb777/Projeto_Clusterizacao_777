@@ -195,7 +195,12 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
     .card > #wordCloud {{
       flex: 1 1 auto;
     }}
-    .js-plotly-plot, .plot-container, .svg-container {{
+    .js-plotly-plot {{
+      width: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }}
+    .plot-container, .svg-container {{
       width: 100% !important;
       height: 100% !important;
       min-height: 0 !important;
@@ -571,6 +576,21 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       requestAnimationFrame(() => requestAnimationFrame(fn));
     }
 
+    function captureChartHeights() {
+      document.querySelectorAll('div[id^="chart"]').forEach(el => {
+        const raw = el.getAttribute('style') || '';
+        const m = raw.match(/height\\s*:\\s*([0-9.]+)px/i);
+        if (m) el.dataset.h = m[1];
+      });
+    }
+
+    function enforceChartHeights(root) {
+      (root || document).querySelectorAll('div[id^="chart"]').forEach(el => {
+        const h = Number(el.dataset.h);
+        if (h > 0) el.style.height = `${h}px`;
+      });
+    }
+
     function resizeVisiblePlots() {
       const section = document.querySelector('.section.active');
       if (!section || typeof Plotly === 'undefined') return;
@@ -588,6 +608,8 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
 
     function scheduleActiveLayoutRefresh() {
       afterLayout(() => {
+        const section = document.querySelector('.section.active');
+        if (section) enforceChartHeights(section);
         resizeVisiblePlots();
         adjustVisibleTables();
       });
@@ -1459,6 +1481,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
     renderQA();
     initCatalogTable();
     activateTab('overview');
+    captureChartHeights();
     refreshAll();
   </script>
 </body>
