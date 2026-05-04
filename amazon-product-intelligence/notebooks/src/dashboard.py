@@ -45,7 +45,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       --radius: 16px;
     }}
     * {{ box-sizing: border-box; }}
-    html, body {{ height: 100%; overflow: hidden; }}
+    html, body {{ height: 100%; overflow: auto; }}
     body {{
       margin: 0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -54,19 +54,21 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
         radial-gradient(900px 600px at 110% 10%, rgba(34,197,94,.18), transparent 60%),
         var(--bg);
       color: var(--text);
-      overflow: hidden;
+      overflow: auto;
     }}
     a {{ color: #a5b4fc; text-decoration: none; }}
     .app {{
       display: grid;
       grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: visible;
     }}
     .sidebar {{
       position: sticky;
       top: 0;
-      height: 100vh;
+      max-height: 100vh;
+      max-height: 100dvh;
       padding: 22px 18px;
       overflow: auto;
       display: flex;
@@ -95,8 +97,7 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       display: flex;
       flex-direction: column;
       gap: var(--gap);
-      height: 100vh;
-      overflow: hidden;
+      overflow: visible;
     }}
     .topbar {{ display: flex; flex-direction: column; gap: 12px; flex: 0 0 auto; }}
     .ticker {{
@@ -184,8 +185,15 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
     .card > #clusterOpportunity,
     .card > #qaAccordion,
     .card > #wordCloud {{
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       min-height: 0;
+    }}
+    .card > .datatable-wrap,
+    .card > #clusterCards,
+    .card > #clusterOpportunity,
+    .card > #qaAccordion,
+    .card > #wordCloud {{
+      flex: 1 1 auto;
     }}
     .js-plotly-plot, .plot-container, .svg-container {{
       width: 100% !important;
@@ -201,20 +209,20 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
       display: none;
       flex: 1 1 auto;
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
     }}
     .section.active {{ display: grid; gap: var(--gap); }}
     #overview.active {{ grid-template-rows: auto minmax(0, 1fr) auto; }}
-    #pricing.active {{ grid-template-rows: minmax(0, 1.02fr) minmax(0, .98fr) auto; }}
-    #ratings.active {{ grid-template-rows: minmax(0, 1fr) minmax(0, .92fr); }}
-    #psi.active {{ grid-template-rows: minmax(0, 1.08fr) minmax(0, .92fr); }}
-    #segments.active {{ grid-template-rows: minmax(0, 1fr) auto minmax(0, .9fr); }}
-    #sentiment.active {{ grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(140px, .56fr); }}
+    #pricing.active,
+    #ratings.active,
+    #psi.active,
+    #segments.active,
+    #sentiment.active {{ grid-template-rows: auto; align-content: start; }}
     #report.active, #catalog.active {{ grid-template-rows: minmax(0, 1fr); }}
     .row, .row3, .rowSegments {{ display: grid; gap: var(--gap); align-items: stretch; min-height: 0; }}
     .row {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     .row3, .rowSegments {{ grid-template-columns: minmax(0, 1.18fr) minmax(320px, .82fr); }}
-    .row > .card, .row3 > .card, .rowSegments > .card, .kpis > .card {{ min-height: 0; height: 100%; }}
+    .row > .card, .row3 > .card, .rowSegments > .card, .kpis > .card {{ min-height: 0; height: auto; }}
     #overview .kpis .card {{ min-height: 88px; justify-content: center; }}
     .title {{ font-size: 16px; font-weight: 800; margin: 0; line-height: 1.2; }}
     .muted {{ color: var(--muted); font-size: 12px; line-height: 1.45; }}
@@ -295,10 +303,13 @@ def render_dashboard_html(dashboard_data: dict[str, Any]) -> str:
     @media (max-width: 1180px) {{
       html, body {{ overflow: auto; }}
       body {{ overflow: auto; }}
-      .app {{ grid-template-columns: 1fr; height: auto; min-height: 100vh; }}
-      .sidebar {{ height: auto; position: relative; }}
+      .app {{ grid-template-columns: 1fr; height: auto; min-height: 100dvh; overflow: visible; }}
+      .sidebar {{ height: auto; position: relative; overflow: visible; border-right: none; border-bottom: 1px solid rgba(148,163,184,.12); }}
+      .nav {{ flex-direction: row; overflow-x: auto; padding-bottom: 6px; }}
+      .nav button {{ white-space: nowrap; flex: 0 0 auto; }}
       .main {{ height: auto; min-height: auto; overflow: visible; }}
       .section, .section.active {{ overflow: visible; }}
+      .section.active {{ display: flex; flex-direction: column; }}
       .toolbar {{ grid-template-columns: 1fr; }}
       .kpis {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .row, .row3, .rowSegments {{ grid-template-columns: 1fr; }}
